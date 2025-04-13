@@ -17,12 +17,11 @@ public class LogicaDropdowns : MonoBehaviour
 
     void Start()
     {
-        // Limpia los dropdowns por si ya tienen opciones
+        //inicializa los dropdowns con opciones predefinidas
         dropdownAngulo.ClearOptions();
         dropdownDistanciaObjetivo.ClearOptions();
         dropdownDistanciaObstaculo.ClearOptions();
 
-        // Opciones para ángulo
         List<string> opcionesAngulo = new List<string>
         {
             "alineado",
@@ -30,7 +29,6 @@ public class LogicaDropdowns : MonoBehaviour
             "muy_desalineado"
         };
 
-        // Opciones para distancia al objetivo
         List<string> opcionesDistanciaObjetivo = new List<string>
         {
             "lejos",
@@ -38,7 +36,6 @@ public class LogicaDropdowns : MonoBehaviour
             "cerca"
         };
 
-        // Opciones para distancia a obstáculo
         List<string> opcionesDistanciaObstaculo = new List<string>
         {
             "no_hay_obstaculo",
@@ -46,29 +43,24 @@ public class LogicaDropdowns : MonoBehaviour
             "obstaculo_muy_cerca"
         };
 
-        // Asigna a los dropdowns
         dropdownAngulo.AddOptions(opcionesAngulo);
         dropdownDistanciaObjetivo.AddOptions(opcionesDistanciaObjetivo);
         dropdownDistanciaObstaculo.AddOptions(opcionesDistanciaObstaculo);
     }
 
-    // Método para leer los valores seleccionados en los Dropdowns y enviarlos al sistema difuso
+    //obtiene las selecciones del usuario y evalúa el sistema difuso
     public void ObtenerValoresYEvaluar()
     {
-        // Obtener las opciones seleccionadas
         string valorAngulo = dropdownAngulo.options[dropdownAngulo.value].text;
         string valorDistanciaObjetivo = dropdownDistanciaObjetivo.options[dropdownDistanciaObjetivo.value].text;
         string valorDistanciaObstaculo = dropdownDistanciaObstaculo.options[dropdownDistanciaObstaculo.value].text;
 
-        // Convertir las opciones seleccionadas a valores flotantes o adecuarlos según lo necesites
         float angulo = ConvertirValorAngulo(valorAngulo);
         float distanciaObjetivo = ConvertirValorDistancia(valorDistanciaObjetivo);
         float distanciaObstaculo = ConvertirValorDistanciaObstaculo(valorDistanciaObstaculo);
 
-        // Guardar resultados
         float[] salidas = new float[2];
 
-        // Llamar al método de evaluación del sistema difuso
         if (sistemaDifuso != null)
         {
             salidas = sistemaDifuso.EvaluarSistema(angulo, distanciaObjetivo, distanciaObstaculo);
@@ -78,7 +70,7 @@ public class LogicaDropdowns : MonoBehaviour
         salida2.text = $"Ángulo : {salidas[1]}";
     }
 
-    // Método para convertir el valor de ángulo en un valor numérico
+    //convierte el valor textual del ángulo a un valor numérico
     float ConvertirValorAngulo(string valor)
     {
         switch (valor)
@@ -90,7 +82,7 @@ public class LogicaDropdowns : MonoBehaviour
         }
     }
 
-    // Método para convertir la distancia al objetivo en un valor numérico
+    //convierte la distancia al objetivo a un valor numérico
     float ConvertirValorDistancia(string valor)
     {
         switch (valor)
@@ -102,7 +94,7 @@ public class LogicaDropdowns : MonoBehaviour
         }
     }
 
-    // Método para convertir la distancia al obstáculo en un valor numérico
+    //convierte la distancia al obstáculo a un valor numérico
     float ConvertirValorDistanciaObstaculo(string valor)
     {
         switch (valor)
