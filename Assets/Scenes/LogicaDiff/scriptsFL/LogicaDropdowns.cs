@@ -9,14 +9,20 @@ public class LogicaDropdowns : MonoBehaviour
     public TMP_Dropdown dropdownDistanciaObjetivo;
     public TMP_Dropdown dropdownDistanciaObstaculo;
 
+    public TMP_Text salida1;
+    public TMP_Text salida2;
+
+    // Referencia al sistema difuso
+    public SistemaDifuso sistemaDifuso;
+
     void Start()
     {
-        // limpia los dropdowns por si ya tienen opciones
+        // Limpia los dropdowns por si ya tienen opciones
         dropdownAngulo.ClearOptions();
         dropdownDistanciaObjetivo.ClearOptions();
         dropdownDistanciaObstaculo.ClearOptions();
 
-        // opciones para ángulo
+        // Opciones para ángulo
         List<string> opcionesAngulo = new List<string>
         {
             "alineado",
@@ -24,7 +30,7 @@ public class LogicaDropdowns : MonoBehaviour
             "muy_desalineado"
         };
 
-        // opciones para distancia al objetivo
+        // Opciones para distancia al objetivo
         List<string> opcionesDistanciaObjetivo = new List<string>
         {
             "lejos",
@@ -32,7 +38,7 @@ public class LogicaDropdowns : MonoBehaviour
             "cerca"
         };
 
-        // opciones para distancia a obstáculo
+        // Opciones para distancia a obstáculo
         List<string> opcionesDistanciaObstaculo = new List<string>
         {
             "no_hay_obstaculo",
@@ -40,43 +46,71 @@ public class LogicaDropdowns : MonoBehaviour
             "obstaculo_muy_cerca"
         };
 
-        // asigna a los dropdowns
+        // Asigna a los dropdowns
         dropdownAngulo.AddOptions(opcionesAngulo);
         dropdownDistanciaObjetivo.AddOptions(opcionesDistanciaObjetivo);
         dropdownDistanciaObstaculo.AddOptions(opcionesDistanciaObstaculo);
     }
 
-    // funciones auxiliares para obtener los valores seleccionados si se requieren
-    public float ObtenerValorAngulo()
+    // Método para leer los valores seleccionados en los Dropdowns y enviarlos al sistema difuso
+    public void ObtenerValoresYEvaluar()
     {
-        return dropdownAngulo.value switch
+        // Obtener las opciones seleccionadas
+        string valorAngulo = dropdownAngulo.options[dropdownAngulo.value].text;
+        string valorDistanciaObjetivo = dropdownDistanciaObjetivo.options[dropdownDistanciaObjetivo.value].text;
+        string valorDistanciaObstaculo = dropdownDistanciaObstaculo.options[dropdownDistanciaObstaculo.value].text;
+
+        // Convertir las opciones seleccionadas a valores flotantes o adecuarlos según lo necesites
+        float angulo = ConvertirValorAngulo(valorAngulo);
+        float distanciaObjetivo = ConvertirValorDistancia(valorDistanciaObjetivo);
+        float distanciaObstaculo = ConvertirValorDistanciaObstaculo(valorDistanciaObstaculo);
+
+        // Guardar resultados
+        float[] salidas = new float[2];
+
+        // Llamar al método de evaluación del sistema difuso
+        if (sistemaDifuso != null)
         {
-            0 => 0f,    // alineado
-            1 => 0.5f,  // poco_alineado
-            2 => 1f,    // muy_desalineado
-            _ => 0f
-        };
+            salidas = sistemaDifuso.EvaluarSistema(angulo, distanciaObjetivo, distanciaObstaculo);
+        }
+
+        salida1.text = $"Velocidad : {salidas[0]}";
+        salida2.text = $"Ángulo : {salidas[1]}";
     }
 
-    public float ObtenerValorDistanciaObjetivo()
+    // Método para convertir el valor de ángulo en un valor numérico
+    float ConvertirValorAngulo(string valor)
     {
-        return dropdownDistanciaObjetivo.value switch
+        switch (valor)
         {
-            0 => 0f,    // lejos
-            1 => 0.5f,  // medio
-            2 => 1f,    // cerca
-            _ => 0f
-        };
+            case "alineado": return 0;
+            case "poco_alineado": return 30;
+            case "muy_desalineado": return 70;
+            default: return 0;
+        }
     }
 
-    public float ObtenerValorDistanciaObstaculo()
+    // Método para convertir la distancia al objetivo en un valor numérico
+    float ConvertirValorDistancia(string valor)
     {
-        return dropdownDistanciaObstaculo.value switch
+        switch (valor)
         {
-            0 => 0f,    // no hay obstáculo
-            1 => 0.5f,  // obstáculo cercano
-            2 => 1f,    // obstáculo muy cerca
-            _ => 0f
-        };
+            case "cerca": return 10;
+            case "medio": return 30;
+            case "lejos": return 50;
+            default: return 30;
+        }
+    }
+
+    // Método para convertir la distancia al obstáculo en un valor numérico
+    float ConvertirValorDistanciaObstaculo(string valor)
+    {
+        switch (valor)
+        {
+            case "no_hay_obstaculo": return 30;
+            case "obstaculo_cercano": return 15;
+            case "obstaculo_muy_cerca": return 5;
+            default: return 30;
+        }
     }
 }

@@ -103,9 +103,9 @@ public class FuncionesMembresia {
     }
 
     // Función de membresía gaussiana
-    public float funcion_membresia_gaussiana(float x, float centro, float desviacion)
+    public double funcion_membresia_gaussiana(double x, double centro, double desviacion)
     {
-        // Fórmula de la función gaussiana
-        return Mathf.Exp(-Mathf.Pow(x - centro, 2) / (2 * Mathf.Pow(desviacion, 2)));
+        return System.Math.Exp(-System.Math.Pow(x - centro, 2) / (2 * System.Math.Pow(desviacion, 2)));
     }
+
 }
