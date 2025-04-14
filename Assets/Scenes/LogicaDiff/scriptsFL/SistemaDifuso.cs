@@ -34,15 +34,15 @@ public class SistemaDifuso : MonoBehaviour
 
         // Variable lingüística: Velocidad de avance
         velocidadAvance = new VariableLinguistica("velocidad_avance");
-        velocidadAvance.AgregarConjunto(new ConjuntoDifuso("detenerse", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 0, 2)));
+        velocidadAvance.AgregarConjunto(new ConjuntoDifuso("detenerse", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 0, 1.5f)));
         velocidadAvance.AgregarConjunto(new ConjuntoDifuso("avanzar_lento", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 5, 2)));
-        velocidadAvance.AgregarConjunto(new ConjuntoDifuso("avanzar_rapido", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 10, 2)));
+        velocidadAvance.AgregarConjunto(new ConjuntoDifuso("avanzar_rapido", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 10, 3f)));
 
         // Variable lingüística: Dirección de giro
         direccionGiro = new VariableLinguistica("direccion_giro");
-        direccionGiro.AgregarConjunto(new ConjuntoDifuso("girar_izquierda", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, -45, 10)));
+        direccionGiro.AgregarConjunto(new ConjuntoDifuso("girar_izquierda", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, -45, 15)));
         direccionGiro.AgregarConjunto(new ConjuntoDifuso("no_girar", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 0, 10)));
-        direccionGiro.AgregarConjunto(new ConjuntoDifuso("girar_derecha", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 45, 10)));
+        direccionGiro.AgregarConjunto(new ConjuntoDifuso("girar_derecha", x => new FuncionesMembresia().funcion_membresia_gaussiana(x, 45, 15)));
 
     }
 
@@ -171,6 +171,42 @@ public class SistemaDifuso : MonoBehaviour
         float r18 = Mathf.Min((float)gradosAngulo["alineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["no_hay_obstaculo"]);
         Asignar(salidaVelocidad, "avanzar_rapido", r18);
         Asignar(salidaGiro, "no_girar", r18);
+        // regla 19: poco alineado, objetivo medio, obstáculo muy cerca → detenerse, girar izquierda
+        float r19 = Mathf.Min((float)gradosAngulo["poco_alineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["muy_cerca"]);
+        Asignar(salidaVelocidad, "detenerse", r19);
+        Asignar(salidaGiro, "girar_izquierda", r19);
+        // regla 20: alineado, objetivo medio, obstáculo muy cerca → detenerse, no girar
+        float r20 = Mathf.Min((float)gradosAngulo["alineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["muy_cerca"]);
+        Asignar(salidaVelocidad, "detenerse", r20);
+        Asignar(salidaGiro, "no_girar", r20);
+        // regla 21: poco alineado, objetivo medio, obstáculo muy cerca → detenerse, girar izquierda
+        float r21 = Mathf.Min((float)gradosAngulo["poco_alineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["muy_cerca"]);
+        Asignar(salidaVelocidad, "detenerse", r21);
+        Asignar(salidaGiro, "girar_izquierda", r21);
+        // regla 22: muy desalineado, objetivo medio, obstáculo muy cerca → detenerse, girar derecha
+        float r22 = Mathf.Min((float)gradosAngulo["muy_desalineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["muy_cerca"]);
+        Asignar(salidaVelocidad, "detenerse", r22);
+        Asignar(salidaGiro, "girar_derecha", r22);
+        // regla 23: alineado, objetivo lejos, obstáculo cercano → avanzar lento, no girar
+        float r23 = Mathf.Min((float)gradosAngulo["alineado"], (float)gradosObjetivo["lejos"], (float)gradosObstaculo["cercano"]);
+        Asignar(salidaVelocidad, "avanzar_lento", r23);
+        Asignar(salidaGiro, "no_girar", r23);
+        // regla 24: poco alineado, objetivo cerca, obstáculo cercano → avanzar lento, girar izquierda
+        float r24 = Mathf.Min((float)gradosAngulo["poco_alineado"], (float)gradosObjetivo["cerca"], (float)gradosObstaculo["cercano"]);
+        Asignar(salidaVelocidad, "avanzar_lento", r24);
+        Asignar(salidaGiro, "girar_izquierda", r24);
+        // regla 25: muy desalineado, objetivo medio, obstáculo cercano → avanzar lento, girar derecha
+        float r25 = Mathf.Min((float)gradosAngulo["muy_desalineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["cercano"]);
+        Asignar(salidaVelocidad, "avanzar_lento", r25);
+        Asignar(salidaGiro, "girar_derecha", r25);
+        // regla 26: poco alineado, objetivo medio, obstáculo cercano → avanzar lento, girar izquierda
+        float r26 = Mathf.Min((float)gradosAngulo["poco_alineado"], (float)gradosObjetivo["medio"], (float)gradosObstaculo["cercano"]);
+        Asignar(salidaVelocidad, "avanzar_lento", r26);
+        Asignar(salidaGiro, "girar_izquierda", r26);
+        // regla 27: muy desalineado, objetivo lejos, obstáculo muy cerca → detenerse, girar derecha
+        float r27 = Mathf.Min((float)gradosAngulo["muy_desalineado"], (float)gradosObjetivo["lejos"], (float)gradosObstaculo["muy_cerca"]);
+        Asignar(salidaVelocidad, "detenerse", r27);
+        Asignar(salidaGiro, "girar_derecha", r27);
 
 
         return (salidaVelocidad, salidaGiro);

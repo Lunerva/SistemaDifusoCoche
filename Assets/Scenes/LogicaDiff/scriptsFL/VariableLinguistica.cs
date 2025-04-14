@@ -19,7 +19,6 @@ public class VariableLinguistica
     {
         conjuntos.Add(conjunto);
     }
-
     //evalua todos los conjuntos difusos con un valor de entrada x
     //devuelve un diccionario con el nombre del conjunto y su grado de membresia
     public Dictionary<string, double> Evaluar(double x)
